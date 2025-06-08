@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stress/Strain Analysis Calculator</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Playfair+Display:wght@400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --bg-color: #ecf0f1;
+            --card-bg: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #7f8c8d;
+            --border-color: #bdc3c7;
+        }
+
+        body {
+            font-family: 'Crimson Text', serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            letter-spacing: -0.02em;
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            font-style: italic;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .card h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            margin-bottom: 25px;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .input-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-field label {
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+            color: var(--text-secondary);
+        }
+
+        input[type="number"] {
+            padding: 12px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: 'Crimson Text', serif;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background: #fafafa;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+            background: white;
+        }
+
+        .angle-input {
+            grid-column: span 3;
+            max-width: 200px;
+            margin: 0 auto;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--accent-color), #c0392b);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .result-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            border-left: 5px solid var(--success-color);
+        }
+
+        .result-card h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #ecf0f1;
+            font-size: 1.05rem;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-label {
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .result-value {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        .toggle-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .toggle {
+            background: white;
+            border-radius: 25px;
+            padding: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 2px solid var(--border-color);
+        }
+
+        .toggle-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 20px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: transparent;
+            color: var(--text-secondary);
+        }
+
+        .toggle-btn.active {
+            background: var(--accent-color);
+            color: white;
+            box-shadow: 0 3px 10px rgba(231, 76, 60, 0.3);
+        }
+
+        .visualization {
+            grid-column: span 2;
+            text-align: center;
+        }
+
+        canvas {
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .formula-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .formula-card h4 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .formula {
+            font-family: 'Crimson Text', serif;
+            font-style: italic;
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .input-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .visualization {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Stress & Strain Analysis</h1>
+            <p>Advanced Engineering Mechanics Calculator by Gowtham Royal</p>
+        </div>
+
+        <div class="toggle-container">
+            <div class="toggle">
+                <button class="toggle-btn active" onclick="switchMode('stress')" id="stressBtn">Stress Analysis</button>
+                <button class="toggle-btn" onclick="switchMode('strain')" id="strainBtn">Strain Analysis</button>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <div class="card">
+                <h2 id="inputTitle">Stress Components Input</h2>
+                <div class="input-group">
+                    <label>Normal and Shear Components:</label>
+                    <div class="input-row">
+                        <div class="input-field">
+                            <label id="sigma_x_label">σₓ (MPa)</label>
+                            <input type="number" id="sigma_x" placeholder="0" step="0.01">
+                        </div>
+                        <div class="input-field">
+                            <label id="sigma_y_label">σᵧ (MPa)</label>
+                            <input type="number" id="sigma_y" placeholder="0" step="0.01">
+                        </div>
+                        <div class="input-field">
+                            <label id="tau_xy_label">τₓᵧ (MPa)</label>
+                            <input type="number" id="tau_xy" placeholder="0" step="0.01">
+                        </div>
+                    </div>
+                    <div class="input-row">
+                        <div class="input-field angle-input">
+                            <label>Rotation Angle θ (degrees)</label>
+                            <input type="number" id="theta" placeholder="0" step="0.1">
+                        </div>
+                    </div>
+                </div>
+                <button class="btn" onclick="calculate()">Calculate Analysis</button>
+
+                <div class="formula-card">
+                    <h4>Transformation Equations:</h4>
+                    <div class="formula" id="formulaText">
+                        σₓ' = (σₓ + σᵧ)/2 + (σₓ - σᵧ)/2 × cos(2θ) + τₓᵧ × sin(2θ)<br>
+                        σᵧ' = (σₓ + σᵧ)/2 - (σₓ - σᵧ)/2 × cos(2θ) - τₓᵧ × sin(2θ)<br>
+                        τₓ'ᵧ' = -(σₓ - σᵧ)/2 × sin(2θ) + τₓᵧ × cos(2θ)
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Principal Values</h2>
+                <div id="principalResults">
+                    <div class="result-item">
+                        <span class="result-label" id="principal1Label">σ₁ (Maximum Principal):</span>
+                        <span class="result-value" id="principal1">-- MPa</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label" id="principal2Label">σ₂ (Minimum Principal):</span>
+                        <span class="result-value" id="principal2">-- MPa</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label" id="maxShearLabel">τₘₐₓ (Maximum Shear):</span>
+                        <span class="result-value" id="maxShear">-- MPa</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">θₚ (Principal Angle):</span>
+                        <span class="result-value" id="principalAngle">-- °</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">θₛ (Max Shear Angle):</span>
+                        <span class="result-value" id="shearAngle">-- °</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="results-grid">
+            <div class="result-card">
+                <h3 id="transformedTitle">Transformed Stress Components</h3>
+                <div class="result-item">
+                    <span class="result-label" id="sigmaXPrimeLabel">σₓ' :</span>
+                    <span class="result-value" id="sigmaXPrime">-- MPa</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label" id="sigmaYPrimeLabel">σᵧ' :</span>
+                    <span class="result-value" id="sigmaYPrime">-- MPa</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label" id="tauXYPrimeLabel">τₓ'ᵧ' :</span>
+                    <span class="result-value" id="tauXYPrime">-- MPa</span>
+                </div>
+            </div>
+
+            <div class="result-card">
+                <h3>Mohr's Circle Parameters</h3>
+                <div class="result-item">
+                    <span class="result-label">Center (σₐᵥₑ):</span>
+                    <span class="result-value" id="mohrsCenter">-- MPa</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Radius:</span>
+                    <span class="result-value" id="mohrsRadius">-- MPa</span>
+                </div>
+            </div>
+
+            <div class="card visualization">
+                <h2>Mohr's Circle Visualization</h2>
+                <canvas id="mohrsCircle" width="400" height="400"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentMode = 'stress';
+
+        function switchMode(mode) {
+            currentMode = mode;
+            const stressBtn = document.getElementById('stressBtn');
+            const strainBtn = document.getElementById('strainBtn');
+            
+            if (mode === 'stress') {
+                stressBtn.classList.add('active');
+                strainBtn.classList.remove('active');
+                updateLabelsForStress();
+            } else {
+                strainBtn.classList.add('active');
+                stressBtn.classList.remove('active');
+                updateLabelsForStrain();
+            }
+        }
+
+        function updateLabelsForStress() {
+            document.getElementById('inputTitle').textContent = 'Stress Components Input';
+            document.getElementById('sigma_x_label').textContent = 'σₓ (MPa)';
+            document.getElementById('sigma_y_label').textContent = 'σᵧ (MPa)';
+            document.getElementById('tau_xy_label').textContent = 'τₓᵧ (MPa)';
+            document.getElementById('principal1Label').textContent = 'σ₁ (Maximum Principal):';
+            document.getElementById('principal2Label').textContent = 'σ₂ (Minimum Principal):';
+            document.getElementById('maxShearLabel').textContent = 'τₘₐₓ (Maximum Shear):';
+            document.getElementById('transformedTitle').textContent = 'Transformed Stress Components';
+            document.getElementById('sigmaXPrimeLabel').textContent = 'σₓ\' :';
+            document.getElementById('sigmaYPrimeLabel').textContent = 'σᵧ\' :';
+            document.getElementById('tauXYPrimeLabel').textContent = 'τₓ\'ᵧ\' :';
+            
+            document.getElementById('formulaText').innerHTML = `
+                σₓ' = (σₓ + σᵧ)/2 + (σₓ - σᵧ)/2 × cos(2θ) + τₓᵧ × sin(2θ)<br>
+                σᵧ' = (σₓ + σᵧ)/2 - (σₓ - σᵧ)/2 × cos(2θ) - τₓᵧ × sin(2θ)<br>
+                τₓ'ᵧ' = -(σₓ - σᵧ)/2 × sin(2θ) + τₓᵧ × cos(2θ)
+            `;
+        }
+
+        function updateLabelsForStrain() {
+            document.getElementById('inputTitle').textContent = 'Strain Components Input';
+            document.getElementById('sigma_x_label').textContent = 'εₓ (μstr)';
+            document.getElementById('sigma_y_label').textContent = 'εᵧ (μstr)';
+            document.getElementById('tau_xy_label').textContent = 'γₓᵧ (μstr)';
+            document.getElementById('principal1Label').textContent = 'ε₁ (Maximum Principal):';
+            document.getElementById('principal2Label').textContent = 'ε₂ (Minimum Principal):';
+            document.getElementById('maxShearLabel').textContent = 'γₘₐₓ (Maximum Shear):';
+            document.getElementById('transformedTitle').textContent = 'Transformed Strain Components';
+            document.getElementById('sigmaXPrimeLabel').textContent = 'εₓ\' :';
+            document.getElementById('sigmaYPrimeLabel').textContent = 'εᵧ\' :';
+            document.getElementById('tauXYPrimeLabel').textContent = 'γₓ\'ᵧ\' :';
+            
+            document.getElementById('formulaText').innerHTML = `
+                εₓ' = (εₓ + εᵧ)/2 + (εₓ - εᵧ)/2 × cos(2θ) + γₓᵧ/2 × sin(2θ)<br>
+                εᵧ' = (εₓ + εᵧ)/2 - (εₓ - εᵧ)/2 × cos(2θ) - γₓᵧ/2 × sin(2θ)<br>
+                γₓ'ᵧ' = -(εₓ - εᵧ) × sin(2θ) + γₓᵧ × cos(2θ)
+            `;
+        }
+
+        function calculate() {
+            const sigma_x = parseFloat(document.getElementById('sigma_x').value) || 0;
+            const sigma_y = parseFloat(document.getElementById('sigma_y').value) || 0;
+            const tau_xy = parseFloat(document.getElementById('tau_xy').value) || 0;
+            const theta = parseFloat(document.getElementById('theta').value) || 0;
+
+            const thetaRad = theta * Math.PI / 180;
+            const twoThetaRad = 2 * thetaRad;
+
+            let sigma_xp, sigma_yp, tau_xyp;
+            let shearFactor = currentMode === 'strain' ? 0.5 : 1;
+
+            // Calculate transformed components
+            const avgStress = (sigma_x + sigma_y) / 2;
+            const diffStress = (sigma_x - sigma_y) / 2;
+
+            sigma_xp = avgStress + diffStress * Math.cos(twoThetaRad) + tau_xy * shearFactor * Math.sin(twoThetaRad);
+            sigma_yp = avgStress - diffStress * Math.cos(twoThetaRad) - tau_xy * shearFactor * Math.sin(twoThetaRad);
+            
+            if (currentMode === 'strain') {
+                tau_xyp = -diffStress * 2 * Math.sin(twoThetaRad) + tau_xy * Math.cos(twoThetaRad);
+            } else {
+                tau_xyp = -diffStress * Math.sin(twoThetaRad) + tau_xy * Math.cos(twoThetaRad);
+            }
+
+            // Calculate principal stresses/strains
+            const radius = Math.sqrt(diffStress * diffStress + (tau_xy * shearFactor) * (tau_xy * shearFactor));
+            const principal1 = avgStress + radius;
+            const principal2 = avgStress - radius;
+            const maxShear = currentMode === 'strain' ? 2 * radius : radius;
+
+            // Calculate principal angles
+            const principalAngleRad = 0.5 * Math.atan2(2 * tau_xy * shearFactor, sigma_x - sigma_y);
+            const principalAngleDeg = principalAngleRad * 180 / Math.PI;
+            const shearAngleDeg = principalAngleDeg + 45;
+
+            // Update results
+            const unit = currentMode === 'stress' ? 'MPa' : 'μstr';
+            
+            document.getElementById('sigmaXPrime').textContent = sigma_xp.toFixed(3) + ' ' + unit;
+            document.getElementById('sigmaYPrime').textContent = sigma_yp.toFixed(3) + ' ' + unit;
+            document.getElementById('tauXYPrime').textContent = tau_xyp.toFixed(3) + ' ' + unit;
+            
+            document.getElementById('principal1').textContent = principal1.toFixed(3) + ' ' + unit;
+            document.getElementById('principal2').textContent = principal2.toFixed(3) + ' ' + unit;
+            document.getElementById('maxShear').textContent = maxShear.toFixed(3) + ' ' + unit;
+            document.getElementById('principalAngle').textContent = principalAngleDeg.toFixed(2) + '°';
+            document.getElementById('shearAngle').textContent = shearAngleDeg.toFixed(2) + '°';
+            
+            document.getElementById('mohrsCenter').textContent = avgStress.toFixed(3) + ' ' + unit;
+            document.getElementById('mohrsRadius').textContent = radius.toFixed(3) + ' ' + unit;
+
+            // Draw Mohr's circle
+            drawMohrsCircle(avgStress, radius, sigma_x, sigma_y, tau_xy, sigma_xp, sigma_yp, tau_xyp, shearFactor);
+        }
+
+        function drawMohrsCircle(center, radius, sx, sy, txy, sxp, syp, txyp, shearFactor) {
+            const canvas = document.getElementById('mohrsCircle');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            // Clear canvas
+            ctx.clearRect(0, 0, width, height);
+
+            // Set up coordinate system
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const scale = Math.min(150 / (radius + Math.abs(center)), 1);
+            const circleRadius = radius * scale;
+
+            // Draw axes
+            ctx.strokeStyle = '#34495e';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([5, 5]);
+            
+            // X-axis
+            ctx.beginPath();
+            ctx.moveTo(50, centerY);
+            ctx.lineTo(width - 50, centerY);
+            ctx.stroke();
+            
+            // Y-axis
+            ctx.beginPath();
+            ctx.moveTo(centerX, 50);
+            ctx.lineTo(centerX, height - 50);
+            ctx.stroke();
+            
+            ctx.setLineDash([]);
+
+            // Draw circle
+            ctx.strokeStyle = '#e74c3c';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.arc(centerX + center * scale, centerY, circleRadius, 0, 2 * Math.PI);
+            ctx.stroke();
+
+            // Draw points
+            const drawPoint = (sigma, tau, color, label) => {
+                const x = centerX + sigma * scale;
+                const y = centerY - tau * shearFactor * scale;
+                
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(x, y, 5, 0, 2 * Math.PI);
+                ctx.fill();
+                ctx.strokeStyle = '#2c3e50';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                ctx.fillStyle = '#2c3e50';
+                ctx.font = '14px Crimson Text';
+                ctx.fillText(label, x + 10, y - 10);
+            };
+
+            // Original state point
+            drawPoint(sx, txy, '#3498db', 'Original');
+            
+            // Transformed state point
+            drawPoint(sxp, txyp, '#27ae60', 'Transformed');
+            
+            // Principal points
+            drawPoint(center + radius, 0, '#f39c12', 'σ₁');
+            drawPoint(center - radius, 0, '#f39c12', 'σ₂');
+
+            // Labels
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = '16px Playfair Display';
+            ctx.fillText(currentMode === 'stress' ? 'σ (MPa)' : 'ε (μstr)', width - 80, centerY + 20);
+            
+            ctx.save();
+            ctx.translate(20, centerY - 50);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText(currentMode === 'stress' ? 'τ (MPa)' : 'γ/2 (μstr)', 0, 0);
+            ctx.restore();
+        }
+
+        // Initialize with stress mode
+        updateLabelsForStress();
+    </script>
+</body>
+</html>
