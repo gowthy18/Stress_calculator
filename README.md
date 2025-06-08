@@ -1,23 +1,11 @@
 # Stress_calculator
  This is a combined project of software and solid mechanics. It is a webpage to calculate stress/strain values at any angle and principal values of stress/strain on an infinitesimal area, when basic values of stress/strain on coordinate axes and angle are given.
-
+ Web application for calculating stress/strain transformations and principal values using Mohr's circle theory with dual-mode functionality.
+• Interactive Visualization Interface
+Designed responsive UI with real-time Mohr's circle canvas rendering and professional engineering layout using HTML5/CSS3/JavaScript.
+• Mathematical Algorithm Implementation
+Developed coordinate transformation algorithms for 2D mechanics analysis including principal calculations and angular transformations.
+how to run;
+just copy the html code that it self contains js and css 
+and live it
  
-If you are testing the website, go (To test the website, please follow these guidelines:) in the Development steps of this README.md file
-
-This repository showcases a web page built using the HTML, CSS and JavaScript which includes:
-
-HTML : Provides a structure for the web page.
-
-CSS : Creates style and design to the web page.
-
-JavaScript : Maintains the functionality of the web page.
-
-Steps to run this website:
-
-Step-1: First clone the repository to your local computer.
-
-Step-2: Install the required extension 'Live Server'
-
-Step-3: Click on 'Go Live'
-
-Now, you can explore the website...
